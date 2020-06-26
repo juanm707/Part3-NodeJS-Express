@@ -1,5 +1,14 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+
+var morgan = require('morgan');
+morgan.token('body', function getBody(req) {
+	return JSON.stringify(req.body);
+});
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+app.use(cors());
 app.use(express.json());
 
 let notes = [
@@ -39,19 +48,19 @@ const generateID = () => {
 app.post('/api/notes', (req, res) => {
 	// console.log(req.headers);
 	const body = req.body;
-	console.log(req);
+	console.log(body);
 
 	if (!body.content) {
 	    return res.status(400).json({
 		    error: 'content missing'
-	       	});
+	    });
 	}
 
 	const note = {
+		id: generateID(),
 	    content: body.content,
-	    important: body.important || false,
-	    date: new Date(),
-	    id: generateID(),
+		date: new Date(),
+		important: body.important || false
 	}
 
 	notes = notes.concat(note);
@@ -77,7 +86,7 @@ app.delete('/api/notes/:id', (req, res) => {
 });
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
