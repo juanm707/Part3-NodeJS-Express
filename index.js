@@ -10,6 +10,7 @@ morgan.token('body', function getBody(req) {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 app.use(cors());
 app.use(express.json());
+app.use(express.static('build'));
 
 let notes = [
 	     {
@@ -48,7 +49,7 @@ const generateID = () => {
 app.post('/api/notes', (req, res) => {
 	// console.log(req.headers);
 	const body = req.body;
-	console.log(body);
+	//console.log(body);
 
 	if (!body.content) {
 	    return res.status(400).json({
@@ -64,7 +65,7 @@ app.post('/api/notes', (req, res) => {
 	}
 
 	notes = notes.concat(note);
-	console.log(note);
+	//console.log(note);
 	res.json(note);
 });
 
